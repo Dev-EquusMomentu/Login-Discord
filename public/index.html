@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Checkout Whop + Discord</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: Arial, sans-serif; background: #18181b; color: #fff; margin: 0; padding: 0; }
+    .container { max-width: 480px; margin: 40px auto; background: #23232a; border-radius: 12px; box-shadow: 0 2px 12px #0005; padding: 32px; }
+    h1 { text-align: center; }
+    .iframe-wrapper { margin: 32px 0; }
+    iframe { width: 100%; min-height: 600px; border: none; border-radius: 8px; }
+    .discord-btn { display: block; width: 100%; background: #5865F2; color: #fff; border: none; border-radius: 6px; padding: 14px; font-size: 1.1em; cursor: pointer; margin-bottom: 24px; }
+    .success, .error { text-align: center; margin-top: 24px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Entrar no Discord</h1>
+    <div id="email-info" style="margin-bottom:18px;"></div>
+    <button class="discord-btn" id="discord-login-btn" onclick="loginDiscord()">Entrar com Discord</button>
+    <div id="discord-user"></div>
+    <button class="discord-btn" id="grant-btn" style="display:none; background:#43b581; margin-top:24px;">Liberar acesso</button>
+    <div class="iframe-wrapper" id="whop-iframe-wrapper" style="display:none;">
+      <iframe id="whop-iframe" src=""></iframe>
+    </div>
+    <div class="success" id="success-message" style="display:none;"></div>
+    <div class="error" id="error-message" style="display:none;"></div>
+  </div>
+  <script>
+    // Substitua pelo seu CLIENT_ID e REDIRECT_URI do Discord
+    const DISCORD_CLIENT_ID = "1420184895132667934";
+    const DISCORD_REDIRECT_URI = "http://localhost:3000";
+    // Substitua pelo seu PRODUCT_ID da Whop
+    const WHOP_PRODUCT_ID = "prod_p5x41EGahSi4t";
+
+    // Detecta email na URL
+    function getEmailFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('email') || '';
+    }
+
+    let detectedEmail = getEmailFromUrl();
+    if (detectedEmail) {
+      document.getElementById('email-info').innerHTML = `<b>Email detectado:</b> ${detectedEmail}`;
+    }
+
+    let discordAccessToken = null;
+    let discordUserId = null;
+
+    async function handleDiscordOAuth() {
+      let accessToken = null;
+      const hash = window.location.hash;
+      // 1. Sempre tenta extrair access_token do hash, independente da ordem
+      if (hash && hash.length > 1) {
+        const params = new URLSearchParams(hash.substring(1));
+        accessToken = params.get("access_token");
+        if (accessToken) {
+          localStorage.setItem("discord_access_token", accessToken);
+          // Limpa o hash da URL imediatamente
+          history.replaceState(null, '', window.location.pathname + window.location.search);
+        }
+      }
+      // 2. Sempre tenta pegar do localStorage
+      if (!accessToken) {
+        accessToken = localStorage.getItem("discord_access_token");
+      }
+      // 3. Se tem token, tenta buscar usuário
+      if (accessToken) {
+        document.getElementById("discord-login-btn").style.display = "none";
+        try {
+          const resp = await fetch("https://discord.com/api/users/@me", {
+            headers: { Authorization: `Bearer ${accessToken}` }
+          });
+          if (resp.ok) {
+            const user = await resp.json();
+            discordAccessToken = accessToken;
+            discordUserId = user.id;
+            document.getElementById("discord-user").innerHTML = `<b>Login successful! Discord ID: ${user.id}</b>`;
+            // Se email detectado, mostra botão de grant
+            if (detectedEmail) {
+              document.getElementById("grant-btn").style.display = "block";
+            }
+            return;
+          } else {
+            // Token inválido, remove e mostra botão de login
+            localStorage.removeItem("discord_access_token");
+            document.getElementById("discord-user").innerHTML = "<span style='color:red'>Session expired. Please login again.</span>";
+            document.getElementById("discord-login-btn").style.display = "block";
+          }
+        } catch (e) {
+          localStorage.removeItem("discord_access_token");
+          document.getElementById("discord-user").innerHTML = "<span style='color:red'>Session expired. Please login again.</span>";
+          document.getElementById("discord-login-btn").style.display = "block";
+        }
+      } else {
+        // 4. Não tem token, mostra botão de login
+        document.getElementById("discord-login-btn").style.display = "block";
+        document.getElementById("discord-user").innerHTML = "";
+        document.getElementById("grant-btn").style.display = "none";
+      }
+    // Envia email + access_token para o backend ao clicar em grant
+    document.getElementById('grant-btn').onclick = async function() {
+      if (!detectedEmail || !discordAccessToken) {
+        alert('Email ou Discord não detectado!');
+        return;
+      }
+      document.getElementById('grant-btn').innerText = 'Enviando...';
+      document.getElementById('grant-btn').disabled = true;
+      try {
+        const res = await fetch('/grant-role', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: detectedEmail, discord_access_token: discordAccessToken, discord_user_id: discordUserId })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          document.getElementById('success-message').innerText = data.message || 'Acesso liberado com sucesso!';
+          document.getElementById('success-message').style.display = 'block';
+        } else {
+          document.getElementById('error-message').innerText = data.error || 'Erro ao liberar acesso.';
+          document.getElementById('error-message').style.display = 'block';
+        }
+      } catch (e) {
+        document.getElementById('error-message').innerText = 'Erro de conexão com o servidor.';
+        document.getElementById('error-message').style.display = 'block';
+      }
+      document.getElementById('grant-btn').innerText = 'Liberar acesso';
+      document.getElementById('grant-btn').disabled = false;
+    }
+    }
+
+    window.loginDiscord = function() {
+      const params = new URLSearchParams({
+        client_id: DISCORD_CLIENT_ID,
+        redirect_uri: DISCORD_REDIRECT_URI,
+        response_type: "token",
+        scope: "identify email"
+      });
+      window.location = `https://discord.com/oauth2/authorize?${params.toString()}`;
+    }
+
+    function showWhopIframe(user) {
+      // Montar URL do iframe Whop (checkout)
+      // Veja docs Whop para customização de query params
+      const whopUrl = `https://whop.com/checkout/${WHOP_PRODUCT_ID}?email=${encodeURIComponent(user.email)}&discord_id=${user.id}`;
+      document.getElementById("whop-iframe").src = whopUrl;
+      document.getElementById("whop-iframe-wrapper").style.display = "block";
+    }
+
+    // Opcional: receber mensagem do iframe (ex: pós-checkout)
+    window.addEventListener("message", (event) => {
+      if (event.origin.includes("whop.com")) {
+        if (event.data && event.data.status === "success") {
+          document.getElementById("success-message").innerText = "Compra realizada com sucesso! Verifique seu Discord.";
+          document.getElementById("success-message").style.display = "block";
+        }
+        if (event.data && event.data.status === "error") {
+          document.getElementById("error-message").innerText = "Erro ao finalizar compra.";
+          document.getElementById("error-message").style.display = "block";
+        }
+      }
+    });
+
+  document.addEventListener("DOMContentLoaded", handleDiscordOAuth);
+  </script>
+</body>
+</html>
