@@ -1,86 +1,22 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Equus Momentum - Final Step</title>
+  <title>Equus Momentum - Join the HQ</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body { font-family: Arial, sans-serif; background: #18181b; color: #fff; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
-    .container { max-width: 480px; background: #23232a; border-radius: 12px; box-shadow: 0 2px 12px #0005; padding: 32px; text-align: center; }
+    .container { max-width: 520px; background: #23232a; border-radius: 12px; box-shadow: 0 2px 12px #0005; padding: 32px; text-align: center; }
     h1 { margin-top: 0; }
-    .discord-btn { display: block; width: 100%; background: #5865F2; color: #fff; border: none; border-radius: 6px; padding: 14px; font-size: 1.1em; cursor: pointer; margin-top: 24px; transition: background 0.2s; }
-    .discord-btn:disabled { background: #4f5bcf; cursor: not-allowed; }
-    .message { margin-top: 24px; font-size: 1.1em; }
+    p { line-height: 1.6; }
+    .btn { display: inline-block; background: #5865F2; color: #fff; border: none; border-radius: 6px; padding: 14px 28px; font-size: 1.1em; cursor: pointer; margin-top: 24px; text-decoration: none; transition: background 0.2s; }
   </style>
 </head>
 <body>
   <div class="container" id="main-container">
-    <h1>One Final Step</h1>
-    <p>To unlock your exclusive roles in our HQ, please log in with the Discord account you'll be using in our community.</p>
-    <button class="discord-btn" id="discord-login-btn">Login with Discord</button>
-    <div class="message" id="message-area"></div>
+    <h1>Your Final Step to the Empire</h1>
+    <p>Your purchase is complete. Click the button below to join our exclusive HQ and instantly receive your `Alchemist` and `Founder` roles.</p>
+    <a href="SEU_LINK_DE_AUTORIZACAO_AQUI" class="btn">Enter HQ & Claim Roles</a>
   </div>
-  <script>
-    const DISCORD_CLIENT_ID = "1420522348271894578"; // SUBSTITUA PELO SEU CLIENT ID
-    const DISCORD_REDIRECT_URI = "https://discord-login-59lx.onrender.com"; // SUBSTITUA PELO SEU URL DA RENDER
-
-    let discordUserId = null;
-    let isProcessing = false;
-
-    async function handleRedirectAndGrantRole() {
-        if (isProcessing) return;
-
-        const hash = window.location.hash;
-        if (hash) {
-            const params = new URLSearchParams(hash.substring(1));
-            const accessToken = params.get("access_token");
-            if (accessToken) {
-                isProcessing = true;
-                document.getElementById('main-container').innerHTML = `<h1>Authenticating...</h1><p>Please wait, we are forging your access.</p>`;
-                history.replaceState(null, '', window.location.pathname); // Limpa a URL
-
-                try {
-                    const userResp = await fetch("https://discord.com/api/users/@me", {
-                        headers: { Authorization: `Bearer ${accessToken}` }
-                    });
-
-                    if (!userResp.ok) throw new Error('Failed to fetch Discord user.');
-                    const user = await userResp.json();
-                    discordUserId = user.id;
-                    
-                    const grantResp = await fetch('/grant-role', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ discord_user_id: discordUserId })
-                    });
-
-                    const data = await grantResp.json();
-                    
-                    if (!grantResp.ok) {
-                       document.getElementById('main-container').innerHTML = `<h1>Error!</h1><p>${data.error || 'Something went wrong.'}</p>${data.inviteLink ? `<a href="${data.inviteLink}" class="discord-btn">Join the HQ</a>` : ''}`;
-                    } else {
-                       document.getElementById('main-container').innerHTML = `<h1>Success!</h1><p>${data.message || 'Your roles have been granted!'}</p><a href="${data.inviteLink}" class="discord-btn">Enter the HQ</a>`;
-                    }
-
-                } catch (e) {
-                    document.getElementById('main-container').innerHTML = `<h1>Error!</h1><p>An error occurred during authentication. Please try again.</p><button onclick="location.reload()" class="discord-btn">Retry</button>`;
-                }
-                isProcessing = false;
-            }
-        }
-    }
-
-    document.getElementById('discord-login-btn').onclick = function() {
-        const params = new URLSearchParams({
-            client_id: DISCORD_CLIENT_ID,
-            redirect_uri: DISCORD_REDIRECT_URI,
-            response_type: "token",
-            scope: "identify" // Só precisamos de 'identify'
-        });
-        window.location = `https://discord.com/oauth2/authorize?${params.toString()}`;
-    }
-    
-    window.onload = handleRedirectAndGrantRole;
-  </script>
 </body>
 </html>
