@@ -2,21 +2,43 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Equus Momentum - Join the HQ</title>
+  <title>Equus Momentum - Welcome to the Cavalry</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { font-family: Arial, sans-serif; background: #18181b; color: #fff; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
-    .container { max-width: 520px; background: #23232a; border-radius: 12px; box-shadow: 0 2px 12px #0005; padding: 32px; text-align: center; }
+    body { font-family: Arial, sans-serif; background: #18181b; color: #fff; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; }
+    .container { max-width: 600px; background: #23232a; border-radius: 12px; box-shadow: 0 2px 12px #0005; padding: 32px; text-align: center; }
     h1 { margin-top: 0; }
-    p { line-height: 1.6; }
-    .btn { display: inline-block; background: #5865F2; color: #fff; border: none; border-radius: 6px; padding: 14px 28px; font-size: 1.1em; cursor: pointer; margin-top: 24px; text-decoration: none; transition: background 0.2s; }
+    p { line-height: 1.6; color: #d4d4d8; }
+    .btn { display: inline-block; color: #fff; border: none; border-radius: 6px; padding: 14px 28px; font-size: 1.1em; cursor: pointer; margin-top: 10px; text-decoration: none; transition: background 0.2s; font-weight: bold; }
+    .btn.primary { background: #5865F2; } /* Discord Blue */
+    .btn.secondary { background: #43b581; } /* Green for Success/Download */
+    .step-container { margin-top: 30px; }
+    .step { margin-bottom: 25px; padding: 20px; border: 1px solid #3f3f46; border-radius: 8px; }
+    .info { margin-top: 30px; font-size: 0.9em; color: #a1a1aa; }
   </style>
 </head>
 <body>
   <div class="container" id="main-container">
-    <h1>Your Final Step to the Empire</h1>
-    <p>Your purchase is complete. Click the button below to join our exclusive HQ and instantly receive your `Alchemist` and `Founder` roles.</p>
-    <a href="https://discord.com/oauth2/authorize?client_id=1420522348271894578&permissions=268435456&response_type=code&redirect_uri=https%3A%2F%2Fdiscord-login-59lx.onrender.com%2Fcallback&integration_type=0&scope=bot+identify+guilds.join" class="btn">Enter HQ & Claim Roles</a>
+    <h1>Welcome to the Cavalry!</h1>
+    <p>Your purchase is complete. You are now one of the Founders. Follow these two crucial steps to claim your arsenal and take your seat at the round table.</p>
+
+    <div class="step-container">
+      <div class="step">
+        <h2>Step 1: Join the HQ & Claim Roles</h2>
+        <p>Click below to authenticate with Discord. This will automatically add you to our server and grant you your exclusive `Alchemist` and `Founder` roles.</p>
+        <a href="SEU_LINK_DE_AUTORIZACAO_AQUI" class="btn primary">Enter HQ & Claim Roles</a>
+      </div>
+
+      <div class="step">
+        <h2>Step 2: Download Your Grimoire</h2>
+        <p>After joining the HQ, return to your Whop purchase page to download your copy of 'The Prompt Grimoire'. It's waiting for you in your library.</p>
+        <a href="https://whop.com/hub" target="_blank" class="btn secondary">Go to My Whop Hub</a>
+      </div>
+    </div>
+    
+    <div class="info">
+      Info: If you lose access to this page, you can always find your product download in your Whop Hub and get support from the **Equus Momentum** team.
+    </div>
   </div>
 </body>
 </html>
