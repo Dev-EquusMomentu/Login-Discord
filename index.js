@@ -21,7 +21,47 @@ const REDIRECT_URI = process.env.DISCORD_REDIRECT_URI;
 
 client.login(BOT_TOKEN);
 client.on('ready', () => console.log(`Bot ${client.user.tag} está online!`));
-// ------------------------------------
+
+// =======================================================
+// O ARAUTO REAL - MENSAGEM DE BOAS-VINDAS
+// =======================================================
+client.on('guildMemberAdd', member => {
+    const welcomeChannelId = process.env.DISCORD_WELCOME_CHANNEL_ID; 
+
+    const welcomeChannel = member.guild.channels.cache.get(welcomeChannelId);
+    if (!welcomeChannel) {
+        console.error('Canal de boas-vindas não encontrado!');
+        return;
+    }
+
+    const welcomeEmbed = {
+        color: 0xFFD700, // Nosso dourado de elite
+        title: `A New Knight Has Joined the Cavalry!`,
+        description: `Welcome to the forge, ${member}! Your journey to command your game begins now.`,
+        fields: [
+            {
+                name: '⚔️ Your First Mission',
+                value: 'Head over to `#📜︱the-cavalrys-decree` to learn our code of honor.',
+                inline: false,
+            },
+            {
+                name: '🤝 Introduce Yourself',
+                value: 'Join the discussion in `#💬︱the-round-table` and tell us what you aim to conquer.',
+                inline: false,
+            },
+        ],
+        thumbnail: {
+            url: member.user.displayAvatarURL({ dynamic: true }),
+        },
+        footer: {
+            text: `Equus Momentum | The Arena is the Mind.`,
+            icon_url: 'https://cdn.discordapp.com/attachments/1416376938368471060/1421994744049045625/Logoequusmomentum.png?ex=68db0f4e&is=68d9bdce&hm=3e31b8123e0401587931c728e39429f989a26301b54f2feccbd97996c224e6c0&', 
+        },
+        timestamp: new Date(),
+    };
+
+    welcomeChannel.send({ embeds: [welcomeEmbed] });
+});
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
