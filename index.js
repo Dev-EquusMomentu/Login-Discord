@@ -43,35 +43,32 @@ client.on('guildMemberAdd', member => {
     const welcomeEmbed = {
         color: 0xFFD700, // Nosso dourado de elite
         title: `A New Knight Has Joined the Cavalry!`,
-        description: `Welcome to the Cavalry, {member}! Your journey to command your game begins now. We've equipped you with your starting gear. Here is your mission briefing:`,
+        description: `Welcome to the Cavalry, ${member}! Your journey to command your game begins now. We've equipped you with your starting gear. Here is your mission briefing:`,
+        
         fields: [
             {
                 name: '📜 Our Code of Honor',
                 value: `Every elite unit has a code. Ours is in <#${decreeChannelId}>. Reading it is your first and most crucial step.`,
                 inline: false,
             },
-            
             { name: '\u200B', value: '\u200B', inline: false },
             {
                 name: '🧠 Understand Our \'Why\'',
                 value: `We are more than a community; we are a movement. Discover the philosophy that fuels our fire in <#${philosophyChannelId}>.`,
                 inline: false,
             },
-
             { name: '\u200B', value: '\u200B', inline: false },
             {
                 name: '🏆 Your Victory',
                 value: `Action is our creed. Share your results and celebrate your progress in <#${winsChannelId}>. This is where warriors are forged.`,
                 inline: false,
             },
-
             { name: '\u200B', value: '\u200B', inline: false },
             {
                 name: '🏛️ Build With Us',
                 value: `This empire is built with every member's insight. Have an idea for a new product, a new community channel, or a new event? This is your senate. The future of the forge is built here, in <#${ideasChannelId}>.`,
                 inline: false,
             },
-
             { name: '\u200B', value: '\u200B', inline: false },
             {
                 name: '❓ Questions?',
@@ -83,11 +80,6 @@ client.on('guildMemberAdd', member => {
         thumbnail: {
             url: member.user.displayAvatarURL({ dynamic: true }),
         },
-        footer: {
-            text: `♞ Equus Momentum`,
-            icon_url: 'https://cdn.discordapp.com/attachments/1416376938368471060/1421998810372247583/capathepromptgrimoire11.png?ex=68db1317&is=68d9c197&hm=cab83b8bdc3e45ef329237822f47188403b9fd77396dfed2145cd33ef77d4f8c&', 
-        },
-        timestamp: new Date(),
     };
 
     welcomeChannel.send({ embeds: [welcomeEmbed] });
