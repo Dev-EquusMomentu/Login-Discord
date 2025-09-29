@@ -23,68 +23,47 @@ client.login(BOT_TOKEN);
 client.on('ready', () => console.log(`Bot ${client.user.tag} está online!`));
 
 // =======================================================
-// O ARAUTO REAL - MENSAGEM DE BOAS-VINDAS
+// O ARAUTO REAL - MENSAGEM DE BOAS-VINDAS (VERSÃO FINAL)
 // =======================================================
 client.on('guildMemberAdd', member => {
-    // A GENTE SÓ DECLARA UMA VEZ
-    const welcomeChannelId = process.env.DISCORD_WELCOME_CHANNEL_ID; 
-    const decreeChannelId = process.env.DISCORD_DECREE_CHANNEL_ID;
-    const philosophyChannelId = process.env.DISCORD_PHILOSOPHY_CHANNEL_ID;
-    const winsChannelId = process.env.DISCORD_WINS_CHANNEL_ID;
-    const ideasChannelId = process.env.DISCORD_IDEAS_CHANNEL_ID;
-    const faqChannelId = process.env.DISCORD_FAQ_CHANNEL_ID;
+    // Definindo TODAS as variáveis de ID que precisamos AQUI.
+    const welcomeChannelId = process.env.DISCORD_WELCOME_CHANNEL_ID;
+    const journeyChannelId = process.env.DISCORD_JOURNEY_CHANNEL_ID;
+    const serverLogoUrl = process.env.DISCORD_SERVER_LOGO_URL; // Adicionamos a logo aqui!
 
     const welcomeChannel = member.guild.channels.cache.get(welcomeChannelId);
     if (!welcomeChannel) {
-        console.error('Canal de boas-vindas não encontrado!');
+        console.error('Canal de boas-vindas não encontrado! Verifique a variável DISCORD_WELCOME_CHANNEL_ID.');
+        return;
+    }
+
+    if (!journeyChannelId) {
+        console.error('ID do canal de jornada não encontrado! Verifique a variável DISCORD_JOURNEY_CHANNEL_ID.');
         return;
     }
 
     const welcomeEmbed = {
         color: 0xFFD700, // Nosso dourado de elite
-        title: `A New Knight Has Joined the Cavalry!`,
-        description: `Welcome to the Cavalry, ${member}! Your journey to command your game begins now. We've equipped you with your starting gear. Here is your mission briefing:`,
-        
-        fields: [
-            {
-                name: '📜 Our Code of Honor',
-                value: `Every elite unit has a code. Ours is in <#${decreeChannelId}>. Reading it is your first and most crucial step.`,
-                inline: false,
-            },
-            { name: '\u200B', value: '\u200B', inline: false },
-            {
-                name: '🧠 Understand Our \'Why\'',
-                value: `We are more than a community; we are a movement. Discover the philosophy that fuels our fire in <#${philosophyChannelId}>.`,
-                inline: false,
-            },
-            { name: '\u200B', value: '\u200B', inline: false },
-            {
-                name: '🏆 Your Victory',
-                value: `Action is our creed. Share your results and celebrate your progress in <#${winsChannelId}>. This is where warriors are forged.`,
-                inline: false,
-            },
-            { name: '\u200B', value: '\u200B', inline: false },
-            {
-                name: '🏛️ Build With Us',
-                value: `This empire is built with every member's insight. Have an idea for a new product, a new community channel, or a new event? This is your senate. The future of the forge is built here, in <#${ideasChannelId}>.`,
-                inline: false,
-            },
-            { name: '\u200B', value: '\u200B', inline: false },
-            {
-                name: '❓ Questions?',
-                value: `For any common questions, our <#${faqChannelId}> channel has the answers. Check there first.`,
-                inline: false,
-            },
-        ],
+
+        author: {
+            name: `A New Warrior Has Entered the Forge!`,
+        },
 
         thumbnail: {
-            url: member.user.displayAvatarURL({ dynamic: true }),
+            url: member.user.displayAvatarURL({ dynamic: true, size: 256 }),
         },
-    };
 
+        description: `
+**The Cavalry salutes a new warrior. Welcome, ${member}! 👋**
+
+You are at the threshold. To proceed, find your mission briefing and begin your true journey in <#${journeyChannelId}>.
+        `,};
+    
     welcomeChannel.send({ embeds: [welcomeEmbed] });
 });
+// =======================================================
 
+    
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
