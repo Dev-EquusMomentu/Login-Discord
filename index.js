@@ -44,9 +44,9 @@ client.on('guildMemberAdd', member => {
         color: 0xFFD700, // Nosso dourado de elite
 
         title: `A New Warrior Has Entered the Forge!`,
-        
+
         thumbnail: {
-            url: member.user.displayAvatarURL({ dynamic: true, size: 256 }),
+            url: member.user.displayAvatarURL({ dynamic: true, size: 200 }),
         },
 
          description: `
