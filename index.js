@@ -26,7 +26,13 @@ client.on('ready', () => console.log(`Bot ${client.user.tag} está online!`));
 // O ARAUTO REAL - MENSAGEM DE BOAS-VINDAS
 // =======================================================
 client.on('guildMemberAdd', member => {
+    // A GENTE SÓ DECLARA UMA VEZ
     const welcomeChannelId = process.env.DISCORD_WELCOME_CHANNEL_ID; 
+    const decreeChannelId = process.env.DISCORD_DECREE_CHANNEL_ID;
+    const philosophyChannelId = process.env.DISCORD_PHILOSOPHY_CHANNEL_ID;
+    const winsChannelId = process.env.DISCORD_WINS_CHANNEL_ID;
+    const ideasChannelId = process.env.DISCORD_IDEAS_CHANNEL_ID;
+    const faqChannelId = process.env.DISCORD_FAQ_CHANNEL_ID;
 
     const welcomeChannel = member.guild.channels.cache.get(welcomeChannelId);
     if (!welcomeChannel) {
@@ -37,25 +43,49 @@ client.on('guildMemberAdd', member => {
     const welcomeEmbed = {
         color: 0xFFD700, // Nosso dourado de elite
         title: `A New Knight Has Joined the Cavalry!`,
-        description: `Welcome to the forge, ${member}! Your journey to command your game begins now.`,
+        description: `Welcome to the Cavalry, {member}! Your journey to command your game begins now. We've equipped you with your starting gear. Here is your mission briefing:`,
         fields: [
             {
-                name: '⚔️ Your First Mission',
-                value: 'Head over to `#📜︱the-cavalrys-decree` to learn our code of honor.',
+                name: '📜 Our Code of Honor',
+                value: `Every elite unit has a code. Ours is in <#${decreeChannelId}>. Reading it is your first and most crucial step.`,
                 inline: false,
             },
+            
+            { name: '\u200B', value: '\u200B', inline: false },
             {
-                name: '🤝 Introduce Yourself',
-                value: 'Join the discussion in `#💬︱the-round-table` and tell us what you aim to conquer.',
+                name: '🧠 Understand Our \'Why\'',
+                value: `We are more than a community; we are a movement. Discover the philosophy that fuels our fire in <#${philosophyChannelId}>.`,
+                inline: false,
+            },
+
+            { name: '\u200B', value: '\u200B', inline: false },
+            {
+                name: '🏆 Your Victory',
+                value: `Action is our creed. Share your results and celebrate your progress in <#${winsChannelId}>. This is where warriors are forged.`,
+                inline: false,
+            },
+
+            { name: '\u200B', value: '\u200B', inline: false },
+            {
+                name: '🏛️ Build With Us',
+                value: `This empire is built with every member's insight. Have an idea for a new product, a new community channel, or a new event? This is your senate. The future of the forge is built here, in <#${ideasChannelId}>.`,
+                inline: false,
+            },
+
+            { name: '\u200B', value: '\u200B', inline: false },
+            {
+                name: '❓ Questions?',
+                value: `For any common questions, our <#${faqChannelId}> channel has the answers. Check there first.`,
                 inline: false,
             },
         ],
+
         thumbnail: {
             url: member.user.displayAvatarURL({ dynamic: true }),
         },
         footer: {
-            text: `Equus Momentum | The Arena is the Mind.`,
-            icon_url: 'https://cdn.discordapp.com/attachments/1416376938368471060/1421994744049045625/Logoequusmomentum.png?ex=68db0f4e&is=68d9bdce&hm=3e31b8123e0401587931c728e39429f989a26301b54f2feccbd97996c224e6c0&', 
+            text: `♞ Equus Momentum`,
+            icon_url: 'https://cdn.discordapp.com/attachments/1416376938368471060/1421998810372247583/capathepromptgrimoire11.png?ex=68db1317&is=68d9c197&hm=cab83b8bdc3e45ef329237822f47188403b9fd77396dfed2145cd33ef77d4f8c&', 
         },
         timestamp: new Date(),
     };
