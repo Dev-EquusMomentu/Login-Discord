@@ -26,10 +26,8 @@ client.on('ready', () => console.log(`Bot ${client.user.tag} está online!`));
 // O ARAUTO REAL - MENSAGEM DE BOAS-VINDAS (VERSÃO FINAL)
 // =======================================================
 client.on('guildMemberAdd', member => {
-    // Definindo TODAS as variáveis de ID que precisamos AQUI.
     const welcomeChannelId = process.env.DISCORD_WELCOME_CHANNEL_ID;
     const journeyChannelId = process.env.DISCORD_JOURNEY_CHANNEL_ID;
-    const serverLogoUrl = process.env.DISCORD_SERVER_LOGO_URL; // Adicionamos a logo aqui!
 
     const welcomeChannel = member.guild.channels.cache.get(welcomeChannelId);
     if (!welcomeChannel) {
@@ -45,15 +43,13 @@ client.on('guildMemberAdd', member => {
     const welcomeEmbed = {
         color: 0xFFD700, // Nosso dourado de elite
 
-        author: {
-            name: `A New Warrior Has Entered the Forge!`,
-        },
-
+        title: `A New Warrior Has Entered the Forge!`,
+        
         thumbnail: {
             url: member.user.displayAvatarURL({ dynamic: true, size: 256 }),
         },
 
-        description: `
+         description: `
 **The Cavalry salutes a new warrior. Welcome, ${member}! 👋**
 
 You are at the threshold. To proceed, find your mission briefing and begin your true journey in <#${journeyChannelId}>.
