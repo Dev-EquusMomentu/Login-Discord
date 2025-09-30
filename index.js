@@ -46,7 +46,7 @@ client.on('guildMemberAdd', member => {
         title: `A New Warrior Has Entered the Forge!`,
 
         thumbnail: {
-            url: member.user.displayAvatarURL({ dynamic: true, size: 200 }),
+            url: member.user.displayAvatarURL({ dynamic: true, size: 128 }),
         },
 
          description: `
