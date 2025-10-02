@@ -6,7 +6,7 @@ const fetch = require('node-fetch');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// --- Configuração do Bot (AGORA 100% CORRETA) ---
+// --- Configuração do Bot ---
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers] });
 
 // Usando OS NOMES EXATOS do nosso arquivo .env
@@ -14,10 +14,11 @@ const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
 const SERVER_ID = process.env.DISCORD_SERVER_ID;
 const ALCHEMIST_ROLE_ID = process.env.DISCORD_ALCHEMIST_ROLE_ID;
 const FOUNDER_ROLE_ID = process.env.DISCORD_FOUNDER_ROLE_ID;
+const VANGUARD_ROLE_ID = process.env.DISCORD_VANGUARD_ROLE_ID; // NOVO CARGO
 const CLIENT_ID = process.env.DISCORD_CLIENT_ID;
 const CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
-const REDIRECT_URI = process.env.DISCORD_REDIRECT_URI;
-
+const REDIRECT_URI_CUSTOMER = process.env.DISCORD_REDIRECT_URI_CUSTOMER; // NOVO
+const REDIRECT_URI_AFFILIATE = process.env.DISCORD_REDIRECT_URI_AFFILIATE; // NOVO
 
 client.login(BOT_TOKEN);
 client.on('ready', () => console.log(`Bot ${client.user.tag} está online!`));
@@ -58,20 +59,17 @@ You are at the threshold. To proceed, find your mission briefing and begin your 
     welcomeChannel.send({ embeds: [welcomeEmbed] });
 });
 // =======================================================
-
-    
+  
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
-// Rota de callback do Discord
-app.get('/callback', async (req, res) => {
-    const code = req.query.code;
+// DRY
+async function handleOAuthAndGrantRoles(code, redirectUri, rolesToAdd, res) {
     if (!code) {
         return res.send("Error: Authorization code not found. Please try again.");
     }
 
     try {
-        // Troca o código por um token de acesso
         const tokenResponse = await fetch('https://discord.com/api/oauth2/token', {
             method: 'POST',
             body: new URLSearchParams({
@@ -79,7 +77,7 @@ app.get('/callback', async (req, res) => {
                 client_secret: CLIENT_SECRET,
                 code: code,
                 grant_type: 'authorization_code',
-                redirect_uri: REDIRECT_URI,
+                redirect_uri: redirectUri,
                 scope: 'identify guilds.join',
             }),
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -92,25 +90,18 @@ app.get('/callback', async (req, res) => {
         }
         
         const accessToken = tokenData.access_token;
-
-        // Pega as informações do usuário
-        const userResponse = await fetch('https://discord.com/api/users/@me', {
-            headers: { authorization: `Bearer ${accessToken}` },
-        });
+        const userResponse = await fetch('https://discord.com/api/users/@me', { headers: { authorization: `Bearer ${accessToken}` } });
         const user = await userResponse.json();
         const userId = user.id;
 
-        // Adiciona o usuário ao servidor
         const guild = await client.guilds.fetch(SERVER_ID);
         await guild.members.add(userId, { accessToken });
         
-        // Adiciona os cargos
         const member = await guild.members.fetch(userId);
-        await member.roles.add([ALCHEMIST_ROLE_ID, FOUNDER_ROLE_ID]);
+        await member.roles.add(rolesToAdd);
         
-        console.log(`User ${userId} added to the server and roles granted.`);
+        console.log(`User ${userId} processed. Roles granted: ${rolesToAdd.join(', ')}`);
 
-        // Redireciona para uma página de sucesso
         res.send(`
             <style>body{font-family:Arial,sans-serif;background:#18181b;color:#fff;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;text-align:center;} .container{max-width:480px;background:#23232a;border-radius:12px;padding:32px;}</style>
             <div class="container">
@@ -118,13 +109,25 @@ app.get('/callback', async (req, res) => {
                 <p>Your elite roles have been granted. You can now close this window and open your Discord app.</p>
             </div>
         `);
-
     } catch (error) {
         console.error('Error in callback flow:', error);
         res.status(500).send("An internal server error occurred. Please try again or contact support.");
     }
+}
+
+// ROTA #1: Para Clientes Pagantes
+app.get('/callback-customer', async (req, res) => {
+    const code = req.query.code;
+    const roles = [ALCHEMIST_ROLE_ID, FOUNDER_ROLE_ID];
+    await handleOAuthAndGrantRoles(code, REDIRECT_URI_CUSTOMER, roles, res);
 });
 
+// ROTA #2: Para Parceiros Afiliados
+app.get('/callback-affiliate', async (req, res) => {
+    const code = req.query.code;
+    const roles = [VANGUARD_ROLE_ID]; // Só o cargo de Vanguarda por este fluxo
+    await handleOAuthAndGrantRoles(code, REDIRECT_URI_AFFILIATE, roles, res);
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
