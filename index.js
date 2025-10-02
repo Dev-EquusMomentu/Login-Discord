@@ -24,6 +24,17 @@ client.login(BOT_TOKEN);
 client.on('ready', () => console.log(`Bot ${client.user.tag} está online!`));
 
 // =======================================================
+// DIAGNÓSTICO DE VARIÁVEIS - REMOVER DEPOIS
+// =======================================================
+console.log("----- VARIÁVEIS DE AMBIENTE CARREGADAS -----");
+console.log("CLIENT_ID:", CLIENT_ID ? "Carregado" : "FALTANDO!");
+console.log("CLIENT_SECRET:", CLIENT_SECRET ? "Carregado" : "FALTANDO!");
+console.log("REDIRECT_URI_CUSTOMER:", REDIRECT_URI_CUSTOMER);
+console.log("REDIRECT_URI_AFFILIATE:", REDIRECT_URI_AFFILIATE);
+console.log("-------------------------------------------");
+// =======================================================
+
+// =======================================================
 // O ARAUTO REAL - MENSAGEM DE BOAS-VINDAS (VERSÃO FINAL)
 // =======================================================
 client.on('guildMemberAdd', member => {
