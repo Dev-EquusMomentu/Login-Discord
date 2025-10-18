@@ -51,7 +51,7 @@ client.on('guildMemberAdd', member => {
         },
 
          description: `
-**The Cavalry salutes a new warrior. Welcome, ${member}! 👋**
+**The Cavalry salutes a new warrior. Welcome, ${member}!**
 
 You are at the threshold. To proceed, find your mission briefing and begin your true journey in <#${journeyChannelId}>.
         `,};
