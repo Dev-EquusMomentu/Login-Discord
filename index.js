@@ -4,7 +4,9 @@ const express = require('express');
 const path = require('path');
 const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js');
 const fetch = require('node-fetch');
-require('dotenv').config();
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -28,7 +30,7 @@ const {
 } = process.env;
 
 client.login(DISCORD_BOT_TOKEN);
-c// =======================================================
+// =======================================================
 // O DESPERTAR DO PRETOR - DEFINE O STATUS DO BOT
 // =======================================================
 client.on('ready', () => {
