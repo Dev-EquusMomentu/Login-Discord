@@ -28,7 +28,15 @@ const {
 } = process.env;
 
 client.login(DISCORD_BOT_TOKEN);
-client.on('ready', () => console.log(`Bot ${client.user.tag} está online!`));
+c// =======================================================
+// O DESPERTAR DO PRETOR - DEFINE O STATUS DO BOT
+// =======================================================
+client.on('ready', () => {
+    console.log(`Bot ${client.user.tag} está online e pronto para comandar!`);
+
+    client.user.setActivity('Commanding the Cavalry', { type: 'PLAYING' });
+});
+// =======================================================
 
 // =======================================================
 // O GUARDIÃO DO PORTÃO - ACOLHE TODOS OS RECRUTAS
