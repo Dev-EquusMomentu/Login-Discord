@@ -145,6 +145,12 @@ app.get('/callback-affiliate', (req, res) => {
     handleOAuthAndGrantRoles(req.query.code, DISCORD_REDIRECT_URI_AFFILIATE, [DISCORD_VANGUARD_ROLE_ID], res);
 });
 
+// ROTA #3: Waitlist (Lista de Espera)
+app.get('/callback-waitlist', (req, res) => {
+    const roleToGive = process.env.DISCORD_RECRUIT_ROLE_ID; 
+    
+    handleOAuthAndGrantRoles(req.query.code, process.env.DISCORD_REDIRECT_URI_WAITLIST, [roleToGive], res);
+});
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
