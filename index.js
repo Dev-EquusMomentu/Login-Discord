@@ -180,8 +180,6 @@ async function handleOAuthAndGrantRoles(code, redirectUri, rolesToAdd, res, type
         
         await member.roles.remove(DISCORD_RECRUIT_ROLE_ID).catch(() => {});
         await member.roles.add(rolesToAdd);
-        
-        console.log(`[QG] ${user.username} processado. Tipo: ${type}.`);
 
         res.send(getSuccessPage(type));
 
