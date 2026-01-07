@@ -177,7 +177,7 @@ async function handleOAuthAndGrantRoles(code, redirectUri, rolesToAdd, res, type
         let member = await guild.members.fetch(user.id).catch(() => null);
         if (!member) member = await guild.members.add(user.id, { accessToken: tokenData.access_token });
         
-        await member.roles.remove(DISCORD_RECRUIT_ROLE_ID).catch(() => {}); // Tenta remover recruta
+        await member.roles.remove(DISCORD_RECRUIT_ROLE_ID).catch(() => {});
         await member.roles.add(rolesToAdd);
         
         console.log(`[QG] ${user.username} processado. Tipo: ${type}.`);
@@ -204,7 +204,6 @@ app.get('/callback-affiliate', (req, res) => {
 
 // 3. Waitlist
 app.get('/callback-waitlist', (req, res) => {
-    const role = process.env.DISCORD_WAITLIST_ROLE_ID || process.env.DISCORD_RECRUIT_ROLE_ID;
     handleOAuthAndGrantRoles(req.query.code, DISCORD_REDIRECT_URI_WAITLIST, [DISCORD_WAITLIST_ROLE_ID], res, 'waitlist');
 });
 
