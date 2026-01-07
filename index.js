@@ -205,7 +205,7 @@ app.get('/callback-affiliate', (req, res) => {
 // 3. Waitlist
 app.get('/callback-waitlist', (req, res) => {
     const role = process.env.DISCORD_WAITLIST_ROLE_ID || process.env.DISCORD_RECRUIT_ROLE_ID;
-    handleOAuthAndGrantRoles(req.query.code, process.env.DISCORD_REDIRECT_URI_WAITLIST, [role], res, 'waitlist');
+    handleOAuthAndGrantRoles(req.query.code, DISCORD_REDIRECT_URI_WAITLIST, [DISCORD_WAITLIST_ROLE_ID], res, 'waitlist');
 });
 
 app.listen(PORT, () => {
